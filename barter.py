@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import math
+import requests
+import io
 from fpdf import FPDF
 from datetime import datetime
 
@@ -69,8 +71,11 @@ def carregar_dados_onedrive():
     # Certifique-se de trocar o final de "?web=1" para "?download=1"
     url_onedrive = "https://businessdatacombr-my.sharepoint.com/:x:/g/personal/celso_businessdata_com_br/IQCXvBZmm4Z2SpxowIePpe7dAWt-YizxBVW3eXu0TxFNDbc?e=d8uo5n&download=1"
     
-    # Lê direto da internet
-    return pd.read_excel(url_onedrive, sheet_name="Tabela_Precos")
+    # Faz o download usando requests (mais garantido para SharePoint) e lê com pandas
+    response = requests.get(url_onedrive)
+    response.raise_for_status() # Verifica se houve algum erro HTTP
+    
+    return pd.read_excel(io.BytesIO(response.content), sheet_name="Tabela_Precos")
 
 try:
     df = carregar_dados_onedrive()
