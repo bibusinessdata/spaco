@@ -61,13 +61,25 @@ if 'pedido' not in st.session_state:
 st.title("📱 Pedido de Troca Mobile")
 
 # --- 1. Upload da Planilha de Preços ---
-st.markdown("### 1. Tabela de Preços")
-arquivo_excel = st.file_uploader("Carregue a planilha atualizada (Excel)", type=["xlsx"])
+st.markdown("### 1. Tabela de Preços (Sincronizada via OneDrive)")
 
-if arquivo_excel:
-    # Lendo os dados
-    df = pd.read_excel(arquivo_excel, sheet_name="Tabela_Precos")
+@st.cache_data(ttl=600) # Atualiza a planilha a cada 10 minutos (600 segundos)
+def carregar_dados_onedrive():
+    # IMPORTANTE: Cole aqui o link de compartilhamento do OneDrive
+    # Certifique-se de trocar o final de "?web=1" para "?download=1"
+    url_onedrive = "https://businessdatacombr-my.sharepoint.com/personal/celso_businessdata_com_br/Documents/Powerbi/Spaco/Tabela_Precos.xlsx?download=1"
     
+    # Lê direto da internet
+    return pd.read_excel(url_onedrive, sheet_name="Tabela_Precos")
+
+try:
+    df = carregar_dados_onedrive()
+    st.success("Planilha de preços carregada e atualizada com sucesso!")
+except Exception as e:
+    st.error("Não foi possível carregar a planilha do OneDrive. Verifique o link.")
+    df = None
+    
+if df is not None:
     # --- 2. Dados do Cliente ---
     st.markdown("### 2. Dados do Cliente")
     cliente = st.text_input("Nome do Cliente")
@@ -150,4 +162,4 @@ if arquivo_excel:
             st.rerun()
 
 else:
-    st.info("👆 Por favor, faça o upload da planilha 'Pedido_Troca.xlsx' criada anteriormente para iniciar.")
+    st.warning("Aguardando sincronização da tabela de preços...")
