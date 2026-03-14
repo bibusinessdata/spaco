@@ -67,7 +67,7 @@ st.markdown("### 1. Tabela de Preços (Sincronizada via OneDrive)")
 def carregar_dados_onedrive():
     # IMPORTANTE: Cole aqui o link de compartilhamento do OneDrive
     # Certifique-se de trocar o final de "?web=1" para "?download=1"
-    url_onedrive = "https://businessdatacombr-my.sharepoint.com/personal/celso_businessdata_com_br/Documents/Powerbi/Spaco/Tabela_Precos.xlsx?download=1"
+    url_onedrive = "https://businessdatacombr-my.sharepoint.com/:x:/g/personal/celso_businessdata_com_br/IQCXvBZmm4Z2SpxowIePpe7dAWt-YizxBVW3eXu0TxFNDbc?e=d8uo5n&download=1"
     
     # Lê direto da internet
     return pd.read_excel(url_onedrive, sheet_name="Tabela_Precos")
